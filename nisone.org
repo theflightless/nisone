@@ -1,0 +1,69 @@
+nisone -*- mode: org -*-
+#+STARTUP: showall
+* framework:ian's thing(clojurescript, figwheel, lienen)
+** sql access
+So clojurescript compiles down to javascript which means it runs on a javascript engine, either in a web browser or on the server side with nodejs. JDBC is what applications running on the java virtual machine(JVM) use to access sql databases. This means that you're not really able to use JDBC with clojurescript (unless you try to run clojurescript in the JVM which while possible I don't know much about and is not common at all). 
+Here are 2 ways to use clojure/clojurescript and access a sql database: 
+
+1. Use clojure+jvm+jdbc on the server side to access mysql, and return json or edn to the browser 
+which is running clojurescript. This is pretty well documented, and is how most all applications 
+are constructed. 
+The luminus web framework has lots of great docs on how to accomplish this. 
+2. If you would like to run clojurescript on the server side, you should be able to use the 
+same libraries nodejs uses to access mysql(non jdbc), and it should be usable from 
+clojurescript. That said I don't know much about running clojurescript on the server side,
+ and I don't know if it's well documented how to accomplish this. 
+3. secure socket layer, SSH generation, challenge, and reaction.  
+* organization
+toolkit component layer kind
+for n is one, layer probable. 
+model(data structure) > view(ui,I/O) > controller(recieves from view, enacts logic on model)
+back end mysql, elastisch 
+db (core logic for stopping/starting server, connecting to clients)
+* search
+encapsulate search entirely. Do naively at first - each tag has a hash table, study name entry
+grab overlap.(this should only take O(n) to check for membership in each table)
+category = table study ID hash = index
+optimized: elastic search
+spandex(clrs wrapper of elastic search REST client)(more up to date than elastisch(life support))
+https://clojurians-log.clojureverse.org/onyx/2017-02-17
+elastic search(elastisch)compatible with mysql(at least, syncing possible)(necessary)
+also compatible with spark/hadoop, map/reduce(almost definitely unnecessary)
+hash tables of tags. Finding a member of multiple tag is simply by intersection.
+create a data table with tags. Insert that data table
+* backend
+SQLite - works for low/medium traffic dbs, more common than h2 because it's easier to implement. Slightly lower performance overall. Prepackaged support
+with luminous to be workable w/ clojurescript
+mysql - medium article has walkthrough of operating this with ES
+** SQLite
+ lein new luminus nisone +sqlite (used to setup nisone)
+ alternative : h2, java backend 
+** using a hash function to find index would allow very rapid intersecting
+DJB2 works very well for the english language
+** datatypes, storage
+data: CSVs
+local CSVs of study ids for each tag are fine for the moment
+CSVs ingestible by sqlite
+**  ALPHA: flask, python, SQLite
+** postman
+chrome extension for testing server endpoint
+* abstractions to cover both n is one and product testing site
+put, post, hashIndex(study/product name),
+* API
+ main
+search: use keywords to return overlapping studies. (uses spandex)
+get: canonical
+post: canonical
+ viewStudy
+ buildStudy
+ analyzeStudy
+ studyEntry(data point)
+
+
+
+
+
+
+ 
+
+
